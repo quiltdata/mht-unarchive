@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 import logging
 import quopri
+import sys
 from pathlib import Path
 
 from email import message_from_file
@@ -16,15 +17,13 @@ def unquote(quoted):
     return content
 
 class Extract():
-    def __init__(source_file):
+    def __init__(self, source_file):
         with open(source_file, 'r') as f:
-            self.msg =  message_from_file(f)
-        print(msg.preamble)
-        print(msg.epilogue)
+            self.msg = message_from_file(f)
 
         self.html = None
         self.files = {}
-        for part in msg.walk():
+        for part in self.msg.walk():
             if not part.is_multipart():
                 self.parse_part(part)
 
@@ -51,6 +50,10 @@ class Extract():
         else:
             self.files[url] = payload
 
+    def extra_text(self):
+        print(self.msg.preamble)
+        print(self.msg.epilogue)
+
 
 def main():
     args = sys.argv
@@ -60,7 +63,7 @@ def main():
     mht = sys.argv[1]
     log('Extract multi-part of "%s" ...' % mht)
     parsed = Extract(mht)
-    print parsed.html
+    print(parsed.html)
 
 if __name__ == '__main__':
     main()
