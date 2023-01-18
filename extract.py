@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+
 import logging
 import quopri
 import sys
@@ -7,14 +8,18 @@ from pathlib import Path
 from urllib.parse import urlparse
 
 from email import message_from_file
+from bs4 import BeautifulSoup
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 def log(msg):
     logging.info(msg)
 
+MAGIC_EXT = 'mhtml.blink'
+DEFAULT_DECODE = 'latin1'
+
 def unquote(quoted):
     decoded = quopri.decodestring(quoted)
-    content = decoded.decode('utf-8')
+    content = decoded.decode(DEFAULT_DECODE)
     return content
 
 def extract_file_ext(file_name):
@@ -30,7 +35,7 @@ def extract_filename(file_path, ctype):
         return file_name 
 
     split = file_name.split('@')
-    if split[-1] == 'mhtml.blink':
+    if split[-1] == MAGIC_EXT:
         return f'{split[-0]}.css'
 
     return f'{file_name}.{ctype[-1]}'
@@ -68,22 +73,24 @@ class Extract():
 
     def parse_part(self, part):
         ctype = part.get('Content-Type').split('/')
-        quoted = part.get('Content-Type') == 'quoted-printable'
+        quoted = part.get('Content-Transfer-Encoding') == 'quoted-printable'
         uri = part.get('Content-Location')
-        payload = part.get_payload()
-        if quoted:
-            payload = unquote(payload)
+        raw_payload = part.get_payload()
+        payload = unquote(raw_payload) if quoted else raw_payload
 
         if 'html' in ctype:
             assert None == self.html
+            self.raw_html = raw_payload
             self.html = payload
+            self.html_soup = BeautifulSoup(payload, features="html.parser")
         else:
             attrs = self.add_file(uri, ctype)
             self.payloads[attrs["name"]] = payload
             logging.debug(f'file_name {attrs["name"]}')
 
-    def extra_text(self):
+    def print_text(self):
         print(self.msg.preamble)
+        print(self.html_soup)
         print(self.msg.epilogue)
 
 
@@ -95,7 +102,7 @@ def main():
     mht = sys.argv[1]
     log('Extract multi-part of "%s" ...' % mht)
     parsed = Extract(mht)
-    print(parsed.html)
+    parsed.print_text()
 
 if __name__ == '__main__':
     main()

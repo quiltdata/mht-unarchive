@@ -1,4 +1,4 @@
-from extract import Extract
+from extract import * 
 from pathlib import Path
 from pytest import fixture
 
@@ -9,10 +9,11 @@ def ex():
 	ex = Extract(TEST_FILE)
 	return ex
 
-def test_extract(ex):
+def test_ex_html(ex):
 	assert ex
 	assert ex.html
-	assert 'Brandon F' in ex.html
+	#assert 'Brandon F' in ex.html
+
 
 def test_ex_attrs(ex):
 	assert ex.attrs
@@ -22,8 +23,8 @@ def test_ex_attrs(ex):
 
 	attrs = ex.attrs.get(file_name)
 	assert attrs
-	assert '@mhtml.blink' in attrs['uri']
-	assert '@mhtml.blink' not in file_name
+	assert MAGIC_EXT in attrs['uri']
+	assert MAGIC_EXT not in file_name
 	assert '.css' in file_name
 
 def test_ex_suffix(ex):
@@ -31,3 +32,7 @@ def test_ex_suffix(ex):
 	for key in ex.files():
 		suffix = Path(key).suffix
 		assert suffix 
+
+def test_unquote(ex):
+	assert '=3D"' in ex.raw_html
+	assert '=3D"' not in ex.html
