@@ -1,15 +1,22 @@
 from extract import Extract
 from pathlib import Path
+from pytest import fixture
 
 TEST_FILE='sample.mht'
 
-def test_extract():
+@fixture
+def ex():
 	ex = Extract(TEST_FILE)
+	return ex
+
+def test_extract(ex):
 	assert ex
 	assert ex.html
 	assert 'Brandon F' in ex.html
+
+def test_ex_attrs(ex):
 	assert ex.attrs
-	keys = list(ex.attrs.keys())
+	keys = ex.files()
 	file_name = keys[0]
 	assert 'css' in file_name
 
@@ -19,6 +26,8 @@ def test_extract():
 	assert '@mhtml.blink' not in file_name
 	assert '.css' in file_name
 
-	for key in keys:
+def test_ex_suffix(ex):
+	"""every filename has a suffix"""
+	for key in ex.files():
 		suffix = Path(key).suffix
-		assert suffix # every filename has a suffix
+		assert suffix 

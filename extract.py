@@ -47,6 +47,9 @@ class Extract():
             if not part.is_multipart():
                 self.parse_part(part)
 
+    def files(self):
+        return list(self.attrs.keys())
+
     def add_file(self, uri, ctype):
         sections = urlparse(uri)
         file_path = Path(sections.path)
