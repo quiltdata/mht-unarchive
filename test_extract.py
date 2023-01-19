@@ -15,10 +15,17 @@ def test_ex_html(ex):
 	assert 'Brandon F' in str(ex)
 
 def test_ex_get(ex):
+	PREFIX="PRComment"
 	result = ex.get_all('b', string='Brandon F')
 	assert result
-	print(result[0])
 	assert len(result) == 41
+	tag = result[0]
+	n = 1
+	tag['id'] = f'{PREFIX}_{n:03}'
+	tag.string = f'{PREFIX} #{n:03}. {tag.string}'
+	assert 'Comment_001' in str(tag)
+	assert 'Comment_001' in str(ex)
+
 
 def test_ex_attrs(ex):
 	assert ex.attrs
