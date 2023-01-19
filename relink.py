@@ -22,16 +22,17 @@ def relink(ex, reviewer):
         tag.string = f'{RID} #{n:03}. {tag.string}'
 
         link = mktg('a')
-        link.href = f'#{tag["id"]}'
+        link['href'] = f'#{tag["id"]}'
         link.string = tag.string
 
         item = tadd(mktg('li'), link)
         tadd(links, item)
 
-    toc =tadd(mktg('p'), links)
+    toc = mktg('div')
+    toc['id'] = f'{RID}_TOC'
     toc.string = "List of {RID}s"
     body = ex.get('body')
-    body.contents.insert(0, toc)
+    body.contents.insert(0, tadd(toc, links))
     return ex
 
 def main():
