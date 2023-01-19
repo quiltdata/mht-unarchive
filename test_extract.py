@@ -14,6 +14,12 @@ def test_ex_html(ex):
 	assert ex.html
 	assert 'Brandon F' in str(ex)
 
+def test_ex_get(ex):
+	result = ex.get_all('b', string='Brandon F')
+	assert result
+	print(result[0])
+	assert len(result) == 41
+
 def test_ex_attrs(ex):
 	assert ex.attrs
 	keys = ex.files()

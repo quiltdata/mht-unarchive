@@ -72,10 +72,10 @@ class Extract():
         return attrs
 
     def get(self, name=None, **kwargs):
-        self.soup.find(name, **kwargs)
+        return self.soup.find(name, **kwargs)
 
-    def getAll(self, name=None, **kwargs):
-        self.soup.find_all(name, **kwargs)
+    def get_all(self, name=None, **kwargs):
+        return self.soup.find_all(name, **kwargs)
 
     def update_link(self, uri, file_name):
         pass
@@ -89,7 +89,7 @@ class Extract():
         payload = unquote(raw_payload) if quoted else raw_payload
 
         if 'html' in ctype:
-            assert None == self.html
+            assert not self.html
             self.raw_html = raw_payload
             self.html = payload
             self.soup = BeautifulSoup(payload, features="html.parser")
@@ -99,7 +99,7 @@ class Extract():
             logging.debug(f'file_name {attrs["name"]}')
 
     def __str__(self):
-        return self.soup.prettify() if self.html_soup else "Extract<None>"
+        return self.soup.prettify() if self.soup else "Extract<None>"
 
     def print_text(self):
         print(self.msg.preamble)
