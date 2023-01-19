@@ -19,9 +19,8 @@ def test_filename(ex):
 	file_path = Path(TEST_URI.split(':')[1])
 	assert MAGIC_EXT in str(file_path)
 	file_name = extract_filename(file_path, ['text', 'css'])
-	assert '9168ec675a37.css' in file_name
-	assert TEST_URI in str(ex)
-	ex.replace_filename(TEST_URI, f'./{file_name}')
+	local_file = f'./{file_name}'
+	assert '9168ec675a37.css' in local_file
 	assert TEST_URI not in str(ex)
 	assert file_name in str(ex)
 
@@ -36,7 +35,6 @@ def test_ex_get(ex):
 	tag.string = f'{PREFIX} #{n:03}. {tag.string}'
 	assert 'Comment_001' in str(tag)
 	assert 'Comment_001' in str(ex)
-
 
 def test_ex_attrs(ex):
 	assert ex.attrs
@@ -61,8 +59,7 @@ def test_ex_update_link(ex):
 	file_name = keys[0]
 	attrs = ex.attrs.get(file_name)
 	uri = attrs['uri']
-
-	assert uri in str(ex)
+	assert uri not in str(ex)
 
 def test_unquote(ex):
 	assert '=3D"' in ex.raw_html

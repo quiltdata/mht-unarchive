@@ -56,7 +56,12 @@ class Extract():
         return list(self.attrs.keys())
 
     def replace_filename(self, uri, file_name):
-        pass
+        local_file = f'./{file_name}'
+        link = self.get(href=uri)
+        if link:
+            link['href'] = local_file
+            return local_file
+        logging.warning(f'replace_filename.not-found.href={uri}')
 
     def add_file(self, uri, ctype):
         sections = urlparse(uri)
@@ -76,10 +81,10 @@ class Extract():
         return attrs
 
     def get(self, name=None, **kwargs):
-        return self.soup.find(name, **kwargs)
+        return self.soup.find(name, **kwargs) if self.soup else None
 
     def get_all(self, name=None, **kwargs):
-        return self.soup.find_all(name, **kwargs)
+        return self.soup.find_all(name, **kwargs) if self.soup else None
 
     def update_link(self, uri, file_name):
         pass
