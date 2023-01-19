@@ -12,8 +12,7 @@ def ex():
 def test_ex_html(ex):
 	assert ex
 	assert ex.html
-	#assert 'Brandon F' in ex.html
-
+	assert 'Brandon F' in str(ex)
 
 def test_ex_attrs(ex):
 	assert ex.attrs
@@ -32,6 +31,14 @@ def test_ex_suffix(ex):
 	for key in ex.files():
 		suffix = Path(key).suffix
 		assert suffix 
+
+def test_ex_update_link(ex):
+	keys = ex.files()
+	file_name = keys[0]
+	attrs = ex.attrs.get(file_name)
+	uri = attrs['uri']
+
+	assert uri in str(ex)
 
 def test_unquote(ex):
 	assert '=3D"' in ex.raw_html

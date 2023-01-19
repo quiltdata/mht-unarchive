@@ -71,6 +71,16 @@ class Extract():
         self.attrs[file_name] = attrs
         return attrs
 
+    def get(self, name=None, **kwargs):
+        self.soup.find(name, **kwargs)
+
+    def getAll(self, name=None, **kwargs):
+        self.soup.find_all(name, **kwargs)
+
+    def update_link(self, uri, file_name):
+        pass
+
+
     def parse_part(self, part):
         ctype = part.get('Content-Type').split('/')
         quoted = part.get('Content-Transfer-Encoding') == 'quoted-printable'
@@ -82,15 +92,18 @@ class Extract():
             assert None == self.html
             self.raw_html = raw_payload
             self.html = payload
-            self.html_soup = BeautifulSoup(payload, features="html.parser")
+            self.soup = BeautifulSoup(payload, features="html.parser")
         else:
             attrs = self.add_file(uri, ctype)
             self.payloads[attrs["name"]] = payload
             logging.debug(f'file_name {attrs["name"]}')
 
+    def __str__(self):
+        return self.soup.prettify() if self.html_soup else "Extract<None>"
+
     def print_text(self):
         print(self.msg.preamble)
-        print(self.html_soup)
+        print(self)
         print(self.msg.epilogue)
 
 
