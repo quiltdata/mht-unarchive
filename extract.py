@@ -119,13 +119,12 @@ class Extract():
             logging.debug(f'file_name {attrs["name"]}')
 
     def __str__(self):
-        return self.soup.prettify() if self.soup else "Extract<None>"
+        return str(self.soup) if self.soup else "Extract<None>" # .prettify()
 
     def print_text(self):
         print(self.msg.preamble)
         print(self)
         print(self.msg.epilogue)
-
 
 def main():
     args = sys.argv
