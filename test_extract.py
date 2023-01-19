@@ -13,7 +13,7 @@ def ex():
 def test_ex_html(ex):
 	assert ex
 	assert ex.html
-	assert 'Brandon F' in str(ex)
+	assert 'User F' in str(ex)
 
 def test_filename(ex):
 	file_path = Path(TEST_URI.split(':')[1])
@@ -26,7 +26,7 @@ def test_filename(ex):
 
 def test_ex_get(ex):
 	PREFIX="PRComment"
-	result = ex.get_all('b', string='Brandon F')
+	result = ex.get_all('b', string='User F')
 	assert result
 	assert len(result) == 41
 	tag = result[0]

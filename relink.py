@@ -5,7 +5,7 @@ import logging
 from extract import Extract
 
 RID="PRComment"
-REVIEWER="Brandon F"
+REVIEWER="User F"
 
 def tadd(p,t): 
     p.contents.append(t)
