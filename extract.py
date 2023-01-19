@@ -55,6 +55,9 @@ class Extract():
     def files(self):
         return list(self.attrs.keys())
 
+    def replace_filename(self, uri, file_name):
+        pass
+
     def add_file(self, uri, ctype):
         sections = urlparse(uri)
         file_path = Path(sections.path)
@@ -69,6 +72,7 @@ class Extract():
             "ext": file_ext,
         }
         self.attrs[file_name] = attrs
+        self.replace_filename(uri, file_name)
         return attrs
 
     def get(self, name=None, **kwargs):

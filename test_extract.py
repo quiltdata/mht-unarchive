@@ -3,6 +3,7 @@ from pathlib import Path
 from pytest import fixture
 
 TEST_FILE='sample.mht'
+TEST_URI='cid:css-8e135dc7-1298-4278-b82b-9168ec675a37@mhtml.blink'
 
 @fixture
 def ex():
@@ -13,6 +14,16 @@ def test_ex_html(ex):
 	assert ex
 	assert ex.html
 	assert 'Brandon F' in str(ex)
+
+def test_filename(ex):
+	file_path = Path(TEST_URI.split(':')[1])
+	assert MAGIC_EXT in str(file_path)
+	file_name = extract_filename(file_path, ['text', 'css'])
+	assert '9168ec675a37.css' in file_name
+	assert TEST_URI in str(ex)
+	ex.replace_filename(TEST_URI, f'./{file_name}')
+	assert TEST_URI not in str(ex)
+	assert file_name in str(ex)
 
 def test_ex_get(ex):
 	PREFIX="PRComment"
